@@ -32,7 +32,6 @@ class PayMe extends Command {
 
     const amount = Interaction.options.get(`amount`);
     const description = Interaction.options.get(`description`);
-    let member;
 
     if (amount.value <= 0) {
       Interaction.reply({
@@ -43,15 +42,10 @@ class PayMe extends Command {
     }
     
     await Interaction.deferReply();
-    try {
-      member = await Interaction.guild.members.fetch(Interaction.user.id);
-    } catch(err) {
-      console.log(err);
-    }
 
     try {
       const um = new UserManager();
-      const userWallet = await um.getUserWallet(member.user.id);
+      const userWallet = await um.getUserWallet(Interaction.user.id);
       
       const uw = new UserWallet(userWallet.adminkey);
       const invoiceDetails = await uw.createInvoice(amount.value, description.value);
