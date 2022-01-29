@@ -8,7 +8,8 @@ dotenv.config();
 
 class Bot {
   /**
-   * Initializes all modules, a Discord client, binds events.
+   * Initializes all modules, a 
+   * +Discord client, binds events.
    * @constructor
    */
   constructor() {
@@ -54,6 +55,22 @@ class Bot {
   }
 
   /**
+     * Passes message events to the MessageHandler.
+     * @param {Message} Message The Discord message object.
+     */
+   onMessage(Message) {
+    if (
+      Message.content.toLowerCase() === `!deploy` && 
+      Message.author.id === `177898294939222016`
+    ) {
+      this.InteractionHandler.updateCommands();
+      return;
+    }
+
+    this.MessageHandler.handleMessage(Message);
+  }
+
+  /**
    * Passes interaction events to the InteractionHandler.
    * @param {Interaction} Interaction The Discord interaction object.
    */
@@ -61,22 +78,6 @@ class Bot {
     this.InteractionHandler.handleInteraction(Interaction);
   }
 
-
-  /**
-   * Passes message events to the MessageHandler.
-   * @param {Message} Message The Discord message object.
-   */
-  onMessage(Message) {
-    if (
-      Message.content.toLowerCase() === `!deploy` && 
-      Message.author.id === `177898294939222016`
-    ) {
-      this.InteractionHandler.createCommands();
-      return;
-    }
-
-    this.MessageHandler.handleMessage(Message);
-  }
 
   /**
    * Passes reaction add events to the ReactionHandler.

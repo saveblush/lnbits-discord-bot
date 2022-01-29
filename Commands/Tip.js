@@ -71,7 +71,7 @@ class Tip extends Command {
     
     try {
       await Interaction.deferReply();
-      const invoiceDetails = await receiverWallet.createInvote(amount.value, message.value);   
+      const invoiceDetails = await receiverWallet.createInvoice(amount.value, message.value);   
       const invoicePaymentDetails = await senderWallet.payInvoice(invoiceDetails.payment_request);
   
       console.log({
@@ -85,6 +85,21 @@ class Tip extends Command {
       await Interaction.editReply({
         content:`${senderData.toString()} sent ${valueString} to ${receiverData.toString()}`,
       });
+
+      const userManager = new UserManager();
+      let wallet = await userManager.getUserWallet(receiverData.user.id);
+      
+      if(wallet.adminkey) {
+        wallet = new UserWallet(wallet.adminkey)
+
+        try {
+          receiverData.send(`You received ${valueString} from ${senderData.toString()}.\nYour new Balance: ${await wallet.getBalanceString()}`);
+        }
+        catch(err) {
+          console.log(err)
+        }
+      } 
+      
     } catch(err) {
       console.log(err);
     }
