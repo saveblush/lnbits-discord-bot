@@ -76,7 +76,8 @@ class Rain extends Command {
         const randomInteger = (maxNumber) => {
           return Math.floor(Math.random() * maxNumber)
         }
-
+        
+        await Interaction.guild.members.fetch({force: true})
         let rawMembers = await Interaction.channel.members
         let members = [];
         rawMembers.forEach((guildMember, id) => {
@@ -84,6 +85,13 @@ class Rain extends Command {
             members.push(guildMember)
           }
         })
+
+        if(members.length == 0) {
+          await Interaction.reply({
+            content: 'Could not send Sats'
+          });
+          return;
+        }
 
         let reply = `Sent ${amount} Sats to\n`
 
