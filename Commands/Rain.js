@@ -24,6 +24,18 @@ class Rain extends Command {
         'description': 'To how much users do you want to give sats?',
         'type': 'INTEGER',
         'required': true
+      },
+      {
+        'name': 'message',
+        'description': 'Message to send with your transaction',
+        'type': 'STRING',
+        'required': false
+      },
+      {
+        'name': 'roles',
+        'description': 'Only users with one of the given roles can receive sats',
+        'type': 'STRING',
+        'required': false
       }
     ];
   }
@@ -31,6 +43,8 @@ class Rain extends Command {
   async execute(Interaction) {
     const amount = Interaction.options.get('amount').value
     let users = Interaction.options.get('users').value
+    const roles = Interaction.options.get('roles').value
+    let memo = Interaction.options.get('message').value
 
     if (amount <= 0) {
       Interaction.reply({
@@ -64,7 +78,21 @@ class Rain extends Command {
           return;
         }
 
-        Interaction.deferReply();
+        await Interaction.deferReply();
+
+        let validRoles = []
+        if (roles != undefined) {
+          const split = roles.split(' ')
+          split.forEach(async (role) => {
+            if (role.length > 3) {
+              const id = role.substring(3, role.length - 1)
+              const result = await Interaction.guild.roles.fetch(id)
+              if (result != undefined) {
+                validRoles.push(result)
+              }
+            }
+          })
+        }
 
         let member;
         try {
@@ -73,27 +101,48 @@ class Rain extends Command {
           console.log(err);
         }
         
+        if (Interaction.guild.members.cache.size < Interaction.guild.memberCount) {
+          await Interaction.guild.members.fetch({force: true})
+        }
+
+        let rawMembers = await Interaction.channel.members
+        let members = [];
+
         const randomInteger = (maxNumber) => {
           return Math.floor(Math.random() * maxNumber)
         }
-        
-        await Interaction.guild.members.fetch({force: true})
-        let rawMembers = await Interaction.channel.members
-        let members = [];
-        rawMembers.forEach((guildMember, id) => {
+
+        await rawMembers.forEach(async(guildMember, id) => {
           if(id != Interaction.user.id && guildMember.user.bot == false) {
-            members.push(guildMember)
+            if (validRoles.length > 0) {
+              for(const role of validRoles) {
+                const result = await guildMember.roles.resolve(role.id)
+                if(result != null) {
+                  members.push(guildMember)
+                  break;
+                }
+              }
+            }
+            else {
+              members.push(guildMember)
+            }
           }
         })
 
         if(members.length == 0) {
-          await Interaction.reply({
+          await Interaction.editReply({
             content: 'Could not send Sats'
           });
           return;
         }
+      
+        let reply = `${memo != undefined ? memo + "\n" : ""}Sent ${amount} ${amount == 1 ? "Satoshi" : "Satoshis"} to\n`
 
-        let reply = `Sent ${amount} Sats to\n`
+        if(memo == undefined) {
+          memo = `Rain by ${member.user.username}`
+        }
+
+        let usersSent = []
 
         while(users > 0 && members.length > 0) {
           const index = randomInteger(members.length)
@@ -101,25 +150,38 @@ class Rain extends Command {
           
           if(receiverWallet.adminkey) {
             receiverWallet = new UserWallet(receiverWallet.adminkey)
-            const invoice = await receiverWallet.createInvoice(amount, `Rain by ${member.user.username}`)
+            const invoice = await receiverWallet.createInvoice(amount, memo)
             const payment = await senderWallet.payInvoice(invoice.payment_request)
-            
-            try {
-              members[index].send(`You received ${amount} Satoshis from ${member.toString()}.\nYour new Balance: ${await receiverWallet.getBalanceString()}`);
-            }
-            catch(err) {
-              console.log(err)
-            }
 
+            usersSent.push({member: members[index], wallet: receiverWallet})
             reply += `${members[index].toString()}\n`
             members.splice(index, 1)
             users--;
           }
         }
 
-        await Interaction.editReply({
-          content: reply
+        let embed = new Discord.MessageEmbed()
+          .setTitle(`💸 Rain by ${member.user.username} 💸`)
+          .setDescription(reply)
+        
+        const message = await Interaction.editReply({
+          embeds: [embed]
         })
+
+        usersSent.forEach(async(user) => {
+          try {
+            const balance = await user.wallet.getBalanceString()
+            let embed = new Discord.MessageEmbed()
+              .setTitle(`New Payment`)
+              .setDescription(`You received **${amount} ${amount == 1 ? "Satoshi" : "Satoshis"}** from ${member.toString()}\n
+                               Your new Balance: **${balance}**\n
+                               The payment happened [here](https://discord.com/channels/${message.guildId}/${message.channelId}/${message.id})`)
+            user.member.send({embeds: [embed]});
+          }
+          catch(err) {
+            console.log(err)
+          }
+        });
 
       }
       else {
