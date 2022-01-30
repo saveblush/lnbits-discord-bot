@@ -1,6 +1,7 @@
 const Command = require(`./Command.js`);
 const UserManager = require(`../lnbitsAPI/UserManager.js`);
 const UserWallet = require(`../lnbitsAPI/User.js`);
+const Discord = require(`discord.js`)
 
 class Tip extends Command {
   constructor() {
@@ -82,23 +83,22 @@ class Tip extends Command {
         invoiceDetails: invoicePaymentDetails
       });
         
-      await Interaction.editReply({
-        content:`${senderData.toString()} sent ${valueString} to ${receiverData.toString()}`,
+      const reply = await Interaction.editReply({
+        content: `${senderData.toString()} sent ${valueString} to ${receiverData.toString()}`,
       });
 
-      const userManager = new UserManager();
-      let wallet = await userManager.getUserWallet(receiverData.user.id);
-      
-      if(wallet.adminkey) {
-        wallet = new UserWallet(wallet.adminkey)
-
-        try {
-          receiverData.send(`You received ${valueString} from ${senderData.toString()}.\nYour new Balance: ${await wallet.getBalanceString()}`);
-        }
-        catch(err) {
-          console.log(err)
-        }
-      } 
+      try {
+        const balance = await receiverWallet.getBalanceString()
+        let embed = new Discord.MessageEmbed()
+          .setTitle(`New Payment`)
+          .setDescription(`You received **${amount.value} ${amount.value == 1 ? "Satoshi" : "Satoshis"}** from ${senderData.toString()}\n
+                           Your new Balance: **${balance}**\n
+                           The payment happened [here](https://discord.com/channels/${reply.guildId}/${reply.channelId}/${reply.id})`)
+        receiverData.send({embeds: [embed]});
+      }
+      catch(err) {
+        console.log(`Error while sending DM: ${err}`)
+      }
       
     } catch(err) {
       console.log(err);
