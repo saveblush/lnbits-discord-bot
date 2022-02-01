@@ -43,8 +43,15 @@ class Rain extends Command {
   async execute(Interaction) {
     const amount = Interaction.options.get('amount').value
     let users = Interaction.options.get('users').value
-    const roles = Interaction.options.get('roles').value
-    let memo = Interaction.options.get('message').value
+    let roles = Interaction.options.get('roles')
+    let memo = Interaction.options.get('message')
+
+    if (roles != null) {
+      roles = roles.value
+    }
+    if(memo != null) {
+      memo = memo.value
+    }
 
     if (amount <= 0) {
       Interaction.reply({
