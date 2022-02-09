@@ -45,7 +45,7 @@ class Rain extends Command {
     let users = Interaction.options.get('users').value
     let roles = Interaction.options.get('roles')
     let memo = Interaction.options.get('message')
-
+    
     if (roles != null) {
       roles = roles.value
     }
