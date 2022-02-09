@@ -45,7 +45,7 @@ class Rain extends Command {
     let users = Interaction.options.get('users').value
     let roles = Interaction.options.get('roles')
     let memo = Interaction.options.get('message')
-    
+
     if (roles != null) {
       roles = roles.value
     }
@@ -88,13 +88,13 @@ class Rain extends Command {
         await Interaction.deferReply();
 
         let validRoles = []
-        if (roles != undefined) {
+        if (roles != null) {
           const split = roles.split(' ')
           split.forEach(async (role) => {
             if (role.length > 3) {
               const id = role.substring(3, role.length - 1)
               const result = await Interaction.guild.roles.fetch(id)
-              if (result != undefined) {
+              if (result != null) {
                 validRoles.push(result)
               }
             }
@@ -143,7 +143,7 @@ class Rain extends Command {
           return;
         }
       
-        let reply = `${memo != undefined ? memo + "\n" : ""}Sent ${amount} ${amount == 1 ? "Satoshi" : "Satoshis"} to\n`
+        let reply = `${memo != null ? memo + "\n" : ""}Sent ${amount} ${amount == 1 ? "Satoshi" : "Satoshis"} to\n`
 
         if(memo == undefined) {
           memo = `Rain by ${member.user.username}`
