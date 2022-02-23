@@ -54,17 +54,18 @@ class PayMe extends Command {
       const buffer = new Buffer.from(qrData.split(`,`)[1], `base64`);
       const file = new Discord.MessageAttachment(buffer, `image.png`);
       const embed = new Discord.MessageEmbed().setImage(`attachment://image.png`).addField(`Payment Request`, `${invoiceDetails.payment_request}`, true);
-  
-      // const row = new Discord.MessageActionRow()
-      //   .addComponents([
-      //     new Discord.MessageButton({
-      //       custom_id: `pay`,
-      //       label: `Pay Now!`,
-      //       emoji: { name: `💸` },
-      //       style: `SECONDARY`
-      //     })
-      //   ]);
-      // Interaction.editReply({ embeds: [embed], files: [file], components: [row]});
+      
+      const row = new Discord.MessageActionRow()
+        .addComponents([
+          new Discord.MessageButton({
+            custom_id: `pay`,
+            label: `Pay Now!`,
+            emoji: { name: `💸` },
+            style: `SECONDARY`
+          })
+        ]);
+      Interaction.editReply({ embeds: [embed], files: [file], components: [row]});
+
       Interaction.editReply({ embeds: [embed], files: [file]});
     } catch(err) {
       console.log(err);

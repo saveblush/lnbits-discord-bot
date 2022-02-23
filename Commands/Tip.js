@@ -94,7 +94,7 @@ class Tip extends Command {
           .setDescription(`You received **${amount.value} ${amount.value == 1 ? "Satoshi" : "Satoshis"}** from ${senderData.toString()}\n
                            Your new Balance: **${balance}**\n
                            The payment happened [here](https://discord.com/channels/${reply.guildId}/${reply.channelId}/${reply.id})`)
-        receiverData.send({embeds: [embed]});
+        await receiverData.send({embeds: [embed]});
       }
       catch(err) {
         console.log(`Error while sending DM: ${err}`)
