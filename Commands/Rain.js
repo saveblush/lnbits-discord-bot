@@ -180,8 +180,8 @@ class Rain extends Command {
             const balance = await user.wallet.getBalanceString()
             let embed = new Discord.MessageEmbed()
               .setTitle(`New Payment`)
-              .setDescription(`You received **${amount} ${amount == 1 ? "Satoshi" : "Satoshis"}** from ${member.toString()}\n
-                               ${memo.value != 'null' ? `_${memo.value}_\n` : ''}
+              .setDescription(`You received **${amount} ${amount == 1 ? "Satoshi" : "Satoshis"}** from ${member.toString()}
+                               ${message.value != 'null' ? `\n_${message.value}_\n` : ''}
                                Your new Balance: **${balance}**\n
                                The payment happened [here](https://discord.com/channels/${message.guildId}/${message.channelId}/${message.id})`)
             await user.member.send({embeds: [embed]});
