@@ -84,14 +84,17 @@ class Tip extends Command {
       });
         
       const reply = await Interaction.editReply({
-        content: `${senderData.toString()} sent ${valueString} to ${receiverData.toString()}`,
+        content: `${senderData.toString()} sent ${valueString} to ${receiverData.toString()}${message.value != 'null' ? `\n_${message.value}_` : ''}`,
       });
+
+      console.log(`Memo: ${message.value != 'null' ? `\n_${message.value}_\n` : '\n'}`)
 
       try {
         const balance = await receiverWallet.getBalanceString()
         let embed = new Discord.MessageEmbed()
           .setTitle(`New Payment`)
-          .setDescription(`You received **${amount.value} ${amount.value == 1 ? "Satoshi" : "Satoshis"}** from ${senderData.toString()}\n
+          .setDescription(`You received **${amount.value} ${amount.value == 1 ? "Satoshi" : "Satoshis"}** from ${senderData.toString()}
+                           ${message.value != 'null' ? `\n_${message.value}_\n` : ''}
                            Your new Balance: **${balance}**\n
                            The payment happened [here](https://discord.com/channels/${reply.guildId}/${reply.channelId}/${reply.id})`)
         await receiverData.send({embeds: [embed]});

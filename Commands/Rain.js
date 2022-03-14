@@ -181,9 +181,10 @@ class Rain extends Command {
             let embed = new Discord.MessageEmbed()
               .setTitle(`New Payment`)
               .setDescription(`You received **${amount} ${amount == 1 ? "Satoshi" : "Satoshis"}** from ${member.toString()}\n
+                               ${memo.value != 'null' ? `_${memo.value}_\n` : ''}
                                Your new Balance: **${balance}**\n
                                The payment happened [here](https://discord.com/channels/${message.guildId}/${message.channelId}/${message.id})`)
-            user.member.send({embeds: [embed]});
+            await user.member.send({embeds: [embed]});
           }
           catch(err) {
             console.log(err)
