@@ -5,7 +5,7 @@ const UserWallet = require(`../lnbitsAPI/User.js`);
 const QRCode = require(`qrcode`);
 
 /*
-This command will create an invoice for a user. 
+This command will create an invoice for a user.
 Provides an embed for QR scanning
 */
 
@@ -40,22 +40,22 @@ class PayMe extends Command {
       });
       return;
     }
-    
+
     await Interaction.deferReply();
 
     try {
       const um = new UserManager();
       const userWallet = await um.getUserWallet(Interaction.user.id);
-      
+
       const uw = new UserWallet(userWallet.adminkey);
       const invoiceDetails = await uw.createInvoice(amount.value, description.value);
-   
+
       const qrData = await QRCode.toDataURL(invoiceDetails.payment_request);
       const buffer = new Buffer.from(qrData.split(`,`)[1], `base64`);
       const file = new Discord.MessageAttachment(buffer, `image.png`);
       const embed = new Discord.MessageEmbed().setImage(`attachment://image.png`).addField(`Payment Request`, `${invoiceDetails.payment_request}`, true);
-      
-      const row = new Discord.MessageActionRow()
+
+      /*const row = new Discord.MessageActionRow()
         .addComponents([
           new Discord.MessageButton({
             custom_id: `pay`,
@@ -64,7 +64,7 @@ class PayMe extends Command {
             style: `SECONDARY`
           })
         ]);
-      Interaction.editReply({ embeds: [embed], files: [file], components: [row]});
+      Interaction.editReply({ embeds: [embed], files: [file], components: [row]});*/
 
       Interaction.editReply({ embeds: [embed], files: [file]});
     } catch(err) {
