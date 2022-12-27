@@ -13,13 +13,13 @@
   "dependencies": {
     "dedent-js": "^1.0.1",
     "discord.js": "^13.1.0",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.3",
     "ejs": "^3.1.6",
-    "express": "^4.17.1",
-    "node-fetch": "^2.6.1",
-    "qrcode": "^1.4.4",
-    "winston": "^3.3.3",
-    "wretch": "^1.7.5"
+    "express": "^4.18.2",
+    "node-fetch": "^2.6.7",
+    "qrcode": "^1.5.1",
+    "winston": "^3.8.2",
+    "wretch": "^2.3.0"
   },
   "engines": {
     "node": ">16.6.0",
@@ -27,7 +27,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "pm2-runtime index.js",
     "startd": "nodemon index.js",
     "test": "jest --coverage"
   },

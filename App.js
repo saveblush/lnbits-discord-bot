@@ -16,7 +16,7 @@ app.get(`/login`, (request, response) => {
 });
 
 // Using a controller to serve a view
-app.use(`/callback`, login);      
+app.use(`/callback`, login);
 
 async function login(request, response) {
   const { code } = request.query;
@@ -40,7 +40,7 @@ async function login(request, response) {
       });
 
       const oauthData = await oauthResult.json();
-      
+
       const userResult = await fetch(`https://discord.com/api/users/@me`, {
         headers: {
           authorization: `${oauthData.token_type} ${oauthData.access_token}`,

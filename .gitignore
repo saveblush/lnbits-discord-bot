@@ -1,11 +1,12 @@
 # Dependencies
 node_modules
+package-lock.json
 
 # Logs
 *.log
 
 # Config
-.env
+*.env
 
 # Editor
 .vscode/settings.json
