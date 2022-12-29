@@ -20,16 +20,21 @@ jobs:
         touch .env
         echo "${{ secrets.ENV }}" > .env    
     
+    - name: Build image
+      #run: docker build . --file Dockerfile --tag $IMAGE_NAME
+      run: docker build . --build-arg ACCESS_TOKEN_GITHUB="${{ secrets.ACCESS_TOKEN_GITHUB }}" --file Dockerfile --tag $IMAGE_NAME
+
     - name: Log into registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-        
 
-    - name: Build Docker image
+    - name: Push image
       run: |
-       VERSION=main
-       #IMAGE_ID=${{ github.repository }}/$IMAGE_NAME
-       IMAGE_ID=${{ github.repository }}
-       echo IMAGE_ID=$IMAGE_ID
-       echo VERSION=$VERSION
-       docker build . --build-arg ACCESS_TOKEN_GITHUB="${{ secrets.ACCESS_TOKEN_GITHUB }}" --file Dockerfile --tag ghcr.io/$IMAGE_ID:$VERSION
-       docker push ghcr.io/$IMAGE_ID:$VERSION
+         VERSION=main
+         #IMAGE_ID=${{ github.repository }}/$IMAGE_NAME
+         IMAGE_ID=${{ github.repository }}
+         # Change all uppercase to lowercase
+         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+         echo IMAGE_ID=$IMAGE_ID
+         echo VERSION=$VERSION
+         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+         docker push $IMAGE_ID:$VERSION
