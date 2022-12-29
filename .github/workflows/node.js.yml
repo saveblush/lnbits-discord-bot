@@ -26,4 +26,3 @@ jobs:
           touch .env
           echo "${{ secrets.ENV }}" > .env
 
-      - run: npm test
