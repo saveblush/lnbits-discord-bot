@@ -5,30 +5,25 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - master
+
+  # Run tests for any PRs.
   pull_request:
-    branches: [ "main" ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: actions/checkout@v3
-      
-    - name: Create env file
-      run: |
-        touch .env
-        echo "${{ secrets.ENV }}" > .env
-    
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+ 
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.ENV }}" > .env
+          
+      - run: npm ci
+      - run: npm test
