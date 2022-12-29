@@ -15,6 +15,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
+ 
+      - name: Create env file
+        run: |
+          touch .env
+          echo "${{ secrets.ENV }}" > .env
+          
       - run: npm ci
       - run: npm test
 
