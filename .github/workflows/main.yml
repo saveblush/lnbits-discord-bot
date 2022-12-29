@@ -18,7 +18,7 @@ jobs:
     - name: Create env file
       run: |
         touch .env
-        echo "${{ secrets.ENV_PROD }}" > .env    
+        echo "${{ secrets.ENV }}" > .env    
     
     - name: Log into registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
