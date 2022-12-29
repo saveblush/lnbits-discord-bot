@@ -27,9 +27,9 @@ jobs:
     - name: Build Docker image
       run: |
        VERSION=main
-       IMAGE_ID=${{ github.repository }}/$IMAGE_NAME
+       #IMAGE_ID=${{ github.repository }}/$IMAGE_NAME
+       IMAGE_ID=${{ github.repository }}
        echo IMAGE_ID=$IMAGE_ID
        echo VERSION=$VERSION
        docker build . --tag ghcr.io/$IMAGE_ID:$VERSION
-       docker run ghcr.io/$IMAGE_ID:$VERSION
        docker push ghcr.io/$IMAGE_ID:$VERSION
