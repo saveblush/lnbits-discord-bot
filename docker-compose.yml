@@ -1,0 +1,8 @@
+version: '2'
+services:
+  lnbits-discord-bot:
+    image: docker.pkg.github.com/saveblush/lnbits-discord-bot/lnbits-discord-bot:main
+    network_mode: bridge
+    container_name: lnbits-discord-bot
+    expose:
+      - 5000
