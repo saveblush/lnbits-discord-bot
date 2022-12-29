@@ -37,12 +37,9 @@ jobs:
          # Change all uppercase to lowercase
          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
          # Strip git ref prefix from version
-         VERSION=master
+         VERSION=main
          echo IMAGE_ID=$IMAGE_ID
          echo VERSION=$VERSION
          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
          docker push $IMAGE_ID:$VERSION
-         
-    - name: Deploy to Host
-      #run: docker-compose pull && docker-compose up -d
-      run: docker-compose -f docker-compose.yml pull && docker-compose -f docker-compose.yml up -d
+
