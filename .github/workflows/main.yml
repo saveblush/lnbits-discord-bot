@@ -31,5 +31,5 @@ jobs:
        IMAGE_ID=${{ github.repository }}
        echo IMAGE_ID=$IMAGE_ID
        echo VERSION=$VERSION
-       docker build . --tag ghcr.io/$IMAGE_ID:$VERSION
+       docker build . --build-arg ACCESS_TOKEN_GITHUB="${{ secrets.ACCESS_TOKEN_GITHUB }}" --file Dockerfile --tag ghcr.io/$IMAGE_ID:$VERSION
        docker push ghcr.io/$IMAGE_ID:$VERSION
