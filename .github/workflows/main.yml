@@ -25,8 +25,8 @@ jobs:
         echo "${{ secrets.ENV }}" > .env
         
     - name: Build image
-      #run: docker build . --file Dockerfile --tag $IMAGE_NAME
-      run: docker build . --build-arg ACCESS_TOKEN_GITHUB="${{ secrets.ACCESS_TOKEN_GITHUB }}" --file Dockerfile --tag $IMAGE_NAME
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME
+      #run: docker build . --build-arg ACCESS_TOKEN_GITHUB="${{ secrets.ACCESS_TOKEN_GITHUB }}" --file Dockerfile --tag $IMAGE_NAME
 
     - name: Log into registry
       run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
