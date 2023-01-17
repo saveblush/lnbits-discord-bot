@@ -1,4 +1,7 @@
-FROM node:16
+FROM node:19-alpine
+
+# For alpine version
+RUN apk update && apk add git
 
 #ARG ACCESS_TOKEN_GITHUB
 #RUN git config --global url."https://$ACCESS_TOKEN_GITHUB:x-oauth-basic@github.com/".insteadOf "https://github.com/"
@@ -11,12 +14,11 @@ COPY package*.json ./
 
 # install project dependencies
 RUN npm install
+RUN npm install uuid@latest
 RUN npm install pm2 -g
 
 # Bundle app source
 COPY . .
 
 # Start
-EXPOSE 5000
 CMD ["npm","start"]
-#RUN npm start
